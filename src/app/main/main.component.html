@@ -1,0 +1,106 @@
+<form
+  class="form"
+  (ngSubmit)="
+    addProduct(
+      label,
+      description,
+      price,
+      hasDiscount,
+      discount,
+      dateFrom,
+      dateTo
+    )
+  "
+>
+  <input name="label" type="text" [(ngModel)]="label" placeholder="label" />
+
+  <input
+    type="text"
+    [(ngModel)]="description"
+    placeholder="description"
+    name="description"
+  />
+
+  <input type="text" [(ngModel)]="price" placeholder="0" name="price" />
+  <input
+    *ngIf="hasDiscount"
+    type="text"
+    [(ngModel)]="discount"
+    placeholder="0%"
+    name="discount"
+  />
+  <mat-checkbox name="checked" class="example-margin" [(ngModel)]="hasDiscount"
+    >discount</mat-checkbox
+  >
+
+  <!-- CALENDAR -->
+  <div *ngIf="hasDiscount" class="calendar-wrapper">
+    <mat-form-field color="accent">
+      <mat-label>From</mat-label>
+      <input
+        name="dateFrom"
+        matInput
+        [matDatepicker]="datepickerFrom"
+        [(ngModel)]="dateFrom"
+        (dateChange)="onDateFromSelected($event)"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datepickerFrom"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datepickerFrom></mat-datepicker>
+    </mat-form-field>
+
+    <!-- _________________________________ -->
+
+    <mat-form-field color="accent">
+      <mat-label>To</mat-label>
+      <input
+        name="dateTo"
+        matInput
+        [matDatepicker]="datepickerTo"
+        [(ngModel)]="dateTo"
+        (dateChange)="onDateToSelected($event)"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datepickerTo"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datepickerTo color="primary"></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <!-- _________________________________ -->
+  <button mat-raised-button type="submit">add product</button>
+</form>
+
+<!-- _________________________________ -->
+
+<section class="container">
+  <div class="product" *ngFor="let product of products">
+    <p>label: {{ product.getTitle() }}</p>
+    <p>description: {{ product.getDescription() }}</p>
+
+    <p>
+      date of sale from: {{ product.getDateFrom() | date : "dd/MM/yyyy" }} date
+      to:
+      {{ product.getDateTo() | date : "dd/MM/yyyy" }}
+    </p>
+    <p
+      [ngStyle]="{
+        'text-decoration': product.getDiscount() ? 'line-through' : ''
+      }"
+    >
+      price: {{ product.getPrice() }}
+    </p>
+
+    <p
+      *ngIf="product.getDiscount()"
+      [ngStyle]="{ color: product.getDiscount() ? 'Red' : '' }"
+    >
+      discount: {{ product.getPriceBySale() }}
+    </p>
+
+    <img class="product-img" [src]="product.getImageURL()" />
+  </div>
+</section>
